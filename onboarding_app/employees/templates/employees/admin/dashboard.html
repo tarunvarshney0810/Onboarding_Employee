@@ -1,0 +1,157 @@
+{% extends 'employees/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Admin Dashboard</h2>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h5 class="card-title">Total Users</h5>
+                <p class="card-text display-4">{{ total_users }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title">Total Employees</h5>
+                <p class="card-text display-4">{{ total_employees }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h5 class="card-title">Total Tasks</h5>
+                <p class="card-text display-4">{{ total_tasks }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <h5 class="card-title">Job Types</h5>
+                <p class="card-text display-4">{{ total_job_types }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <!-- Recent Employees -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recent Employees</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Employee ID</th>
+                                <th>Job Type</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employee in recent_employees %}
+                            <tr>
+                                <td>{{ employee.get_full_name|default:employee.employee_id }}</td>
+                                <td>{{ employee.employee_id }}</td>
+                                <td>{{ employee.job_type.name|default:"-" }}</td>
+                                <td>{{ employee.date_joined|date:"M d, Y" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No recent employees</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Tasks -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recent Tasks</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Job Types</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in recent_tasks %}
+                            <tr>
+                                <td>{{ task.title }}</td>
+                                <td>
+                                    {% for job_type in task.job_types.all %}
+                                    <span class="badge bg-secondary">{{ job_type.name }}</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center">No recent tasks</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <a href="{% url 'user_management' %}" class="btn btn-primary w-100 mb-3">
+                            <i class="fas fa-users me-2"></i>Manage Users
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'task_management' %}" class="btn btn-info w-100 mb-3">
+                            <i class="fas fa-tasks me-2"></i>Manage Tasks
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'task_assignment_management' %}" class="btn btn-success w-100 mb-3">
+                            <i class="fas fa-clipboard-list me-2"></i>Task Assignments
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'enroll' %}" class="btn btn-warning w-100 mb-3">
+                            <i class="fas fa-user-plus me-2"></i>Enroll Employee
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

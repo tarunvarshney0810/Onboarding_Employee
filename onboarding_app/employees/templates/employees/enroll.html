@@ -1,0 +1,141 @@
+{% extends 'employees/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">
+                    <i class="fas fa-user-plus me-2"></i>Enroll New Employee
+                </h3>
+                <p class="card-text text-muted">
+                    Register a new employee and automatically assign relevant onboarding tasks based on their job type.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Employee Registration Form</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.employee_id.id_for_label }}" class="form-label">{{ form.employee_id.label }}</label>
+                            {{ form.employee_id }}
+                            {% if form.employee_id.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.employee_id.errors }}
+                            </div>
+                            {% endif %}
+                            <div class="form-text">This will also be their initial username</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.job_type.id_for_label }}" class="form-label">{{ form.job_type.label }}</label>
+                            {{ form.job_type }}
+                            {% if form.job_type.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.job_type.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }}</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.first_name.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }}</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.last_name.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.email.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.manager_name.id_for_label }}" class="form-label">{{ form.manager_name.label }}</label>
+                            {{ form.manager_name }}
+                            {% if form.manager_name.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.manager_name.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">{{ form.password1.label }}</label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.password1.errors }}
+                            </div>
+                            {% endif %}
+                            <div class="form-text">Initially, set to Employee ID for easy first login</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">{{ form.password2.label }}</label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.password2.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2 col-lg-6 mx-auto">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus me-2"></i>Register Employee
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-light">
+                <div class="text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Tasks will be automatically assigned based on the selected job type
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

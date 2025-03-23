@@ -1,0 +1,255 @@
+{% extends 'employees/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">
+                    {% if 'task' in request.path %}
+                    <i class="fas fa-tasks me-2"></i>
+                    {% elif 'job_type' in request.path %}
+                    <i class="fas fa-user-tag me-2"></i>
+                    {% endif %}
+                    {{ action }}
+                </h3>
+                <p class="card-text text-muted">
+                    {% if 'Create' in action %}
+                    Fill out the form below to create a new {{ action|lower }}.
+                    {% else %}
+                    Update the information for this {{ action|lower }}.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    {% if 'task' in request.path %}
+                    {{ action }} Task Form
+                    {% elif 'job_type' in request.path %}
+                    {{ action }} Form
+                    {% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if 'task' in request.path %}
+                    <!-- Common fields for all task types -->
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.title.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.description.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.task_type.id_for_label }}" class="form-label">{{ form.task_type.label }}</label>
+                        {{ form.task_type }}
+                        {% if form.task_type.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.task_type.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.order.id_for_label }}" class="form-label">Task Order</label>
+                        <input type="number" name="{{ form.order.name }}" id="{{ form.order.id_for_label }}" class="form-control" placeholder="Enter task order (lower numbers appear first)" min="0">
+                        {% if form.order.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.order.errors }}
+                        </div>
+                        {% endif %}
+                        <div class="form-text">Tasks with lower numbers will appear first in the list. Leave as 0 for default ordering.</div>
+                    </div>
+                    
+                    <!-- Email-specific fields -->
+                    <div class="email-fields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="{{ form.email_to.id_for_label }}" class="form-label">Recipient Email</label>
+                            <input type="email" name="{{ form.email_to.name }}" id="{{ form.email_to.id_for_label }}" class="form-control" placeholder="Enter recipient email address">
+                            {% if form.email_to.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.email_to.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.email_subject.id_for_label }}" class="form-label">Email Subject</label>
+                            <input type="text" name="{{ form.email_subject.name }}" id="{{ form.email_subject.id_for_label }}" class="form-control" placeholder="Enter email subject">
+                            {% if form.email_subject.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.email_subject.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.email_body.id_for_label }}" class="form-label">Email Body</label>
+                            <textarea name="{{ form.email_body.name }}" id="{{ form.email_body.id_for_label }}" class="form-control" rows="5" placeholder="Enter email body content"></textarea>
+                            {% if form.email_body.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.email_body.errors }}
+                            </div>
+                            {% endif %}
+                            <div class="form-text">The employee's name and ID will be automatically added to the signature.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Link-specific fields -->
+                    <div class="link-fields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="{{ form.external_link.id_for_label }}" class="form-label">ServiceNow Ticket URL</label>
+                            <input type="url" name="{{ form.external_link.name }}" id="{{ form.external_link.id_for_label }}" class="form-control" placeholder="Enter ServiceNow ticket URL">
+                            {% if form.external_link.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.external_link.errors }}
+                            </div>
+                            {% endif %}
+                            <div class="form-text">Enter the URL of the ServiceNow ticket or resource to be accessed.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Instructions-specific fields -->
+                    <div class="instructions-fields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="instructions" class="form-label">Detailed Instructions</label>
+                            <textarea name="instructions" id="instructions" class="form-control" rows="5" placeholder="Enter detailed instructions for the task"></textarea>
+                            <div class="form-text">Provide step-by-step instructions for completing this task.</div>
+                        </div>
+                    </div>
+
+                    <!-- Notes field for all task types -->
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">Additional Notes</label>
+                        <textarea name="{{ form.notes.name }}" id="{{ form.notes.id_for_label }}" class="form-control" rows="3" placeholder="Add any additional notes or instructions for this task"></textarea>
+                        {% if form.notes.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.notes.errors }}
+                        </div>
+                        {% endif %}
+                        <div class="form-text">Optional notes that will be visible to employees assigned to this task.</div>
+                    </div>
+                    
+                    <!-- Job types field -->
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.job_types.label }}</label>
+                        <div class="card">
+                            <div class="card-body">
+                                {% for checkbox in form.job_types %}
+                                <div class="form-check">
+                                    {{ checkbox }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% if form.job_types.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.job_types.errors }}
+                        </div>
+                        {% endif %}
+                        <div class="form-text">Leave empty to assign to all job types</div>
+                    </div>
+                    
+                    {% elif 'job_type' in request.path %}
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.name.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.description.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-end">
+                        <a href="{% url 'admin_panel' %}" class="btn btn-outline-secondary me-2">
+                            <i class="fas fa-arrow-left me-1"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if 'task' in request.path %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const taskTypeSelect = document.getElementById('id_task_type');
+    const emailFields = document.querySelector('.email-fields');
+    const linkFields = document.querySelector('.link-fields');
+    const instructionsFields = document.querySelector('.instructions-fields');
+    
+    function updateFields() {
+        const taskType = taskTypeSelect.value;
+        console.log('Task type changed to:', taskType); // Debug log
+        
+        // Hide all fields first
+        emailFields.style.display = 'none';
+        linkFields.style.display = 'none';
+        instructionsFields.style.display = 'none';
+        
+        // Show relevant fields based on task type
+        if (taskType === 'email') {
+            emailFields.style.display = 'block';
+        } else if (taskType === 'link') {
+            linkFields.style.display = 'block';
+        } else if (taskType === 'instructions') {
+            instructionsFields.style.display = 'block';
+        }
+    }
+    
+    // Add event listener for task type changes
+    taskTypeSelect.addEventListener('change', updateFields);
+    
+    // Run on page load
+    updateFields();
+});
+</script>
+{% endif %}
+{% endblock %}

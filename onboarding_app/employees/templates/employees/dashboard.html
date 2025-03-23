@@ -1,0 +1,198 @@
+{% extends 'employees/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">
+                    <i class="fas fa-clipboard-check me-2"></i>My Onboarding Tasks
+                </h3>
+                <p class="card-text text-muted">
+                    Welcome to your personalized onboarding dashboard. Track your progress by updating the status of each task.
+                </p>
+                
+                <div class="progress mb-4">
+                    {% with total=not_started_tasks.count|add:in_progress_tasks.count|add:completed_tasks.count %}
+                    {% if total > 0 %}
+                    {% with completed_percent=completed_tasks.count|multiply:100|divide:total %}
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ completed_percent }}%;" 
+                         aria-valuenow="{{ completed_percent }}" aria-valuemin="0" aria-valuemax="100">
+                        {{ completed_tasks.count }} / {{ total }} ({{ completed_percent }}%)
+                    </div>
+                    {% endwith %}
+                    {% else %}
+                    <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        0%
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Not Started Tasks -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h4 class="mb-3 text-danger">
+            <i class="fas fa-exclamation-circle me-2"></i>Not Started
+        </h4>
+        
+        {% if not_started_tasks %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for assignment in not_started_tasks %}
+            <div class="col">
+                <div class="card h-100 border-danger">
+                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ assignment.task.title }}</h5>
+                        <span class="badge bg-light text-danger">Not Started</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ assignment.task.description }}</p>
+                        
+                        {% if assignment.task.task_type == 'link' and assignment.task.external_link %}
+                        <a href="{{ assignment.task.external_link }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-external-link-alt me-1"></i>Open Resource
+                        </a>
+                        {% elif assignment.task.task_type == 'email' and assignment.task.get_email_link %}
+                        <a href="{{ assignment.task.get_email_link }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-envelope me-1"></i>Send Email
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer bg-light">
+                        <form method="post" action="{% url 'update_task_status' assignment.id %}" class="d-flex justify-content-between align-items-center">
+                            {% csrf_token %}
+                            <select name="status" class="form-select form-select-sm w-75" onchange="this.form.submit()">
+                                <option value="not_started" selected>Not Started</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-save"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-light">
+            <i class="fas fa-check-circle me-2"></i>You have no tasks in this category.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- In Progress Tasks -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h4 class="mb-3 text-warning">
+            <i class="fas fa-spinner me-2"></i>In Progress
+        </h4>
+        
+        {% if in_progress_tasks %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for assignment in in_progress_tasks %}
+            <div class="col">
+                <div class="card h-100 border-warning">
+                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ assignment.task.title }}</h5>
+                        <span class="badge bg-light text-warning">In Progress</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ assignment.task.description }}</p>
+                        
+                        {% if assignment.task.task_type == 'link' and assignment.task.external_link %}
+                        <a href="{{ assignment.task.external_link }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-external-link-alt me-1"></i>Open Resource
+                        </a>
+                        {% elif assignment.task.task_type == 'email' and assignment.task.get_email_link %}
+                        <a href="{{ assignment.task.get_email_link }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-envelope me-1"></i>Send Email
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer bg-light">
+                        <form method="post" action="{% url 'update_task_status' assignment.id %}" class="d-flex justify-content-between align-items-center">
+                            {% csrf_token %}
+                            <select name="status" class="form-select form-select-sm w-75" onchange="this.form.submit()">
+                                <option value="not_started">Not Started</option>
+                                <option value="in_progress" selected>In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-save"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-light">
+            <i class="fas fa-check-circle me-2"></i>You have no tasks in this category.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Completed Tasks -->
+<div class="row">
+    <div class="col-12">
+        <h4 class="mb-3 text-success">
+            <i class="fas fa-check-circle me-2"></i>Completed
+        </h4>
+        
+        {% if completed_tasks %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for assignment in completed_tasks %}
+            <div class="col">
+                <div class="card h-100 border-success">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ assignment.task.title }}</h5>
+                        <span class="badge bg-light text-success">Completed</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ assignment.task.description }}</p>
+                        
+                        {% if assignment.task.task_type == 'link' and assignment.task.external_link %}
+                        <a href="{{ assignment.task.external_link }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-external-link-alt me-1"></i>Open Resource
+                        </a>
+                        {% elif assignment.task.task_type == 'email' and assignment.task.get_email_link %}
+                        <a href="{{ assignment.task.get_email_link }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-envelope me-1"></i>Send Email
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer bg-light">
+                        <form method="post" action="{% url 'update_task_status' assignment.id %}" class="d-flex justify-content-between align-items-center">
+                            {% csrf_token %}
+                            <select name="status" class="form-select form-select-sm w-75" onchange="this.form.submit()">
+                                <option value="not_started">Not Started</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed" selected>Completed</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-save"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-light">
+            <i class="fas fa-info-circle me-2"></i>You have no tasks in this category.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% if task.task_type == 'email' and task.get_email_link %}
+    <a href="{{ task.get_email_link }}" class="btn btn-primary" target="_blank">
+        <i class="fas fa-envelope"></i> Send Email
+    </a>
+{% elif task.task_type == 'link' and task.external_link %}
+    <a href="{{ task.external_link }}" class="btn btn-primary" target="_blank">
+        <i class="fas fa-external-link-alt"></i> Open Link
+    </a>
+{% endif %} 
