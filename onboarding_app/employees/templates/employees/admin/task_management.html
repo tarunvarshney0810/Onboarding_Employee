@@ -34,7 +34,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for task in tasks %}
+                                {% for task in page_obj %}
                                 <tr>
                                     <td>{{ task.order }}</td>
                                     <td>{{ task.title }}</td>
@@ -68,24 +68,24 @@
                         </table>
                     </div>
 
-                    {% if tasks.has_other_pages %}
+                    {% if page_obj.has_other_pages %}
                     <nav aria-label="Page navigation" class="mt-4">
                         <ul class="pagination justify-content-center">
-                            {% if tasks.has_previous %}
+                            {% if page_obj.has_previous %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ tasks.previous_page_number }}">Previous</a>
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
                             </li>
                             {% endif %}
 
-                            {% for num in tasks.paginator.page_range %}
-                            <li class="page-item {% if tasks.number == num %}active{% endif %}">
+                            {% for num in page_obj.paginator.page_range %}
+                            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
                                 <a class="page-link" href="?page={{ num }}">{{ num }}</a>
                             </li>
                             {% endfor %}
 
-                            {% if tasks.has_next %}
+                            {% if page_obj.has_next %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ tasks.next_page_number }}">Next</a>
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
                             </li>
                             {% endif %}
                         </ul>
