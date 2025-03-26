@@ -374,39 +374,120 @@ A comprehensive web application for managing employee onboarding processes, buil
 - Python 3.8 or higher
 - pip (Python package installer)
 - Virtual environment (recommended)
+- Git (optional, for version control)
 
-## Installation
+## Windows Installation Steps
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd EmployeeOnboardingPortal
-```
+1. **Install Python**
+   - Download Python 3.8 or higher from [python.org](https://www.python.org/downloads/)
+   - During installation, check "Add Python to PATH"
+   - Verify installation by opening Command Prompt and typing:
+     ```bash
+     python --version
+     pip --version
+     ```
 
-2. Create and activate a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+2. **Clone the Repository**
+   ```bash
+   git clone https://github.com/tarunvarshney0810/Onboarding_Employee.git
+   cd Onboarding_Employee
+   ```
 
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+3. **Create and Activate Virtual Environment**
+   ```bash
+   # Create virtual environment
+   python -m venv venv
 
-4. Configure environment variables:
+   # Activate virtual environment
+   venv\Scripts\activate
+   ```
+
+4. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. **Configure Environment Variables**
    - Create a `.env` file in the project root
    - Add the following variables:
-```
-DEBUG=True
-SECRET_KEY=your-secret-key
-DATABASE_URL=sqlite:///db.sqlite3
-```
+     ```
+     DEBUG=True
+     SECRET_KEY=your-secret-key
+     DATABASE_URL=sqlite:///db.sqlite3
+     ```
 
-5. Apply database migrations:
-```bash
-python manage.py migrate
-```
+6. **Apply Database Migrations**
+   ```bash
+   cd onboarding_app
+   python manage.py migrate
+   ```
+
+7. **Create Superuser**
+   - A default superuser will be created automatically with:
+     - Username: e3017847
+     - Password: Leo@1grip
+     - Employee ID: e3017847
+     - Name: Tarun Varshney
+     - Email: tarun.varshney@example.com
+
+8. **Run the Development Server**
+   ```bash
+   python manage.py runserver
+   ```
+   - Access the application at http://127.0.0.1:8000/
+
+## Production Deployment on Windows
+
+1. **Install Required Software**
+   - Install Python 3.8 or higher
+   - Install Git (optional)
+   - Install PostgreSQL (recommended for production)
+
+2. **Set Up IIS (Internet Information Services)**
+   - Enable IIS in Windows Features
+   - Install URL Rewrite Module for IIS
+   - Install CGI for Python in IIS
+
+3. **Configure IIS**
+   - Create a new website in IIS
+   - Set up application pool with Python
+   - Configure URL rewriting rules
+   - Set up static file serving
+
+4. **Environment Setup**
+   ```bash
+   # Create and activate virtual environment
+   python -m venv venv
+   venv\Scripts\activate
+
+   # Install dependencies
+   pip install -r requirements.txt
+
+   # Install wfastcgi
+   pip install wfastcgi
+   wfastcgi-enable
+   ```
+
+5. **Configure Django Settings**
+   - Set DEBUG=False in settings.py
+   - Configure ALLOWED_HOSTS
+   - Set up proper database settings
+   - Configure static and media files
+
+6. **Collect Static Files**
+   ```bash
+   python manage.py collectstatic
+   ```
+
+7. **Set Up Windows Service**
+   - Create a Windows service for the Django application
+   - Configure automatic startup
+
+8. **Security Considerations**
+   - Use HTTPS
+   - Set up proper firewall rules
+   - Configure Windows authentication
+   - Set up proper file permissions
 
 ## Default Superuser Account
 
@@ -420,27 +501,31 @@ The application comes with a default superuser account that will be created auto
 
 **Important Security Note**: It is strongly recommended to change the default superuser password after the first login.
 
-## Running the Application
+## Troubleshooting
 
-1. Start the development server:
-```bash
-python manage.py runserver
-```
+1. **Python not found in PATH**
+   - Reinstall Python and check "Add Python to PATH"
+   - Or add Python manually to system environment variables
 
-2. Access the application at http://127.0.0.1:8000/
+2. **Virtual environment activation fails**
+   - Run PowerShell as administrator
+   - Set execution policy: `Set-ExecutionPolicy RemoteSigned`
 
-## Deployment
+3. **Database migration errors**
+   - Delete db.sqlite3 and migrations folder
+   - Run `python manage.py makemigrations`
+   - Run `python manage.py migrate`
 
-For production deployment:
+4. **Static files not loading**
+   - Run `python manage.py collectstatic`
+   - Check IIS static file handler configuration
 
-1. Set up a production-grade database (e.g., PostgreSQL)
-2. Configure proper security settings in settings.py
-3. Set up a production-grade web server (e.g., Nginx)
-4. Configure static files serving
-5. Set up proper logging
-6. Use environment variables for sensitive data
-7. Enable HTTPS
-8. Change the default superuser password
+## Support
+
+For support or questions:
+1. Check the documentation
+2. Contact system administrator
+3. Submit an issue on the project repository
 
 ## Contributing
 
